@@ -1,0 +1,82 @@
+// Define your point of interest
+var point = ee.Geometry.Point([86, 27]); // Longitude, Latitude
+
+// Import the GLDAS dataset
+var gldas = ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
+              .select('SoilMoi0_10cm_inst');
+
+// Define your date range
+var startDate = '2015-01-01';
+var endDate = '2015-01-10';
+
+// Filter the dataset for your desired time range
+var filtered = gldas.filterDate(startDate, endDate);
+
+// Function to extract values at the point for each image
+var extractData = function(image) {
+  var value = image.reduceRegion({
+    reducer: ee.Reducer.first(),
+    geometry: point,
+    scale: 25000 // Set an appropriate scale for point sampling
+  }).get('SoilMoi0_10cm_inst');
+
+  return ee.Feature(point, {'date': image.date().format('YYYY-MM-dd'), 'soil_moisture': value});
+};
+
+// Convert image collection to feature collection
+var featureCollection = filtered.map(extractData);
+
+// Export the data to a CSV file
+Export.table.toDrive({
+  collection: featureCollection,
+  description: 'point_soil_moisture_extraction',
+  fileFormat: 'CSV'
+});
+// Add the point to the map with custom styling
+Map.addLayer(point, {color: 'red', pointRadius: 5}, 'Point of Interest');
+// Optionally, center the map on the point
+Map.centerObject(point, 6);
+print(featureCollection)
+
+
+
+####################################### SMAP ###############################################
+// Define your point of interest
+var point = ee.Geometry.Point([86, 27]); // Longitude, Latitude
+
+// Import the GLDAS dataset
+var smap = ee.ImageCollection('NASA_USDA/HSL/SMAP10KM_soil_moisture')
+              .select('ssm');
+
+// Define your date range
+var startDate = '2015-04-02';
+var endDate = '2022-08-02';
+
+// Filter the dataset for your desired time range
+var filtered = smap.filterDate(startDate, endDate);
+
+// Function to extract values at the point for each image
+var extractData = function(image) {
+  var value = image.reduceRegion({
+    reducer: ee.Reducer.first(),
+    geometry: point,
+    scale: 10000 // Set an appropriate scale for point sampling
+  }).get('ssm');
+
+  return ee.Feature(point, {'date': image.date().format('YYYY-MM-dd'), 'soil_moisture': value});
+};
+
+// Convert image collection to feature collection
+var featureCollection = filtered.map(extractData);
+
+// Export the data to a CSV file
+Export.table.toDrive({
+  collection: featureCollection,
+  description: 'point_soil_moisture_extraction',
+  fileFormat: 'CSV'
+});
+// Add the point to the map with custom styling
+Map.addLayer(point, {color: 'red', pointRadius: 5}, 'Point of Interest');
+// Optionally, center the map on the point
+Map.centerObject(point, 6);
+print(featureCollection)
