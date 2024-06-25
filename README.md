@@ -16,7 +16,7 @@ This repository contains the codes and scripts used for data extraction and data
 The `Google Earth engine codes` folder contains scripts used for extracting data from various sources, including Google Earth Engine API. These scripts are organized by their specific data source and functionality.
 
 ## Data Visualization
-The `data_visualization` folder includes scripts for visualizing the extracted data. This includes a range of visualization techniques such as scatter plots, heatmaps, and time series plots to interpret and present the data effectively.
+All other python scripts includes codes for visualizing the extracted data. This includes a range of visualization techniques such as scatter plots, heatmaps, and time series plots to interpret and present the data effectively.
 
 ## Usage
 1. Clone the repository:
